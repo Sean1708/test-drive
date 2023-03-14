@@ -415,13 +415,13 @@ contains
   pure function test_skipped(error) result(is_skipped)
 
     !> Error handling
-    type(error_type), intent(in), optional :: error
+    type(error_type), intent(in), allocatable :: error
 
     !> Test was skipped
     logical :: is_skipped
 
     is_skipped = .false.
-    if (present(error)) then
+    if (allocated(error)) then
       is_skipped = error%stat == skipped
     end if
 
@@ -438,7 +438,7 @@ contains
     type(unittest_type), intent(in) :: test
 
     !> Error handling
-    type(error_type), intent(in), optional :: error
+    type(error_type), intent(in), allocatable :: error
 
     character(len=:), allocatable :: label
     character(len=*), parameter :: indent = repeat(" ", 7) // repeat(".", 3) // " "
@@ -449,7 +449,7 @@ contains
       return
     end if
 
-    if (present(error) .neqv. test%should_fail) then
+    if (allocated(error) .neqv. test%should_fail) then
       if (test%should_fail) then
         label = " [UNEXPECTED PASS]"
       else
@@ -463,7 +463,7 @@ contains
       end if
     end if
     output = indent // test%name // label
-    if (present(error)) then
+    if (allocated(error)) then
       output = output // new_line("a") // "  Message: " // error%message
     end if
   end subroutine make_output
